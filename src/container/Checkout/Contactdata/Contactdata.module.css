@@ -1,0 +1,44 @@
+.Contactdata {
+    margin: auto;
+    background-color: black;
+    color:white;
+    text-align: center;
+    border: 1px solid #ccc;
+    width: 50%;
+    box-shadow: 1px 1px 1px black;
+    padding: 16px;
+
+    box-sizing: border-box;
+    transition: all 0.3s ease-out;
+    border-radius: 7px;
+}
+
+.Contactdata .Input {
+    display: block;
+
+    margin: 10px auto;
+}
+
+.Button {
+    background-color: black;
+    border: none;
+    border: 1px solid white;
+    border-radius: 7px;
+    color: green;
+    outline: none;
+    cursor: pointer;
+    font: inherit;
+    padding: 10px;
+    margin: 10px;
+    font-weight: bold;
+}
+
+/* .Button:first-of-type {
+    margin-left: 0;
+    padding-left: 0;
+} */
+.Button:disabled {
+    background-color: white;
+    cursor: not-allowed;
+    color:#ccc;
+}
