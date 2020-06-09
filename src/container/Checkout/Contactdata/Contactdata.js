@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import classes from './Contactdata.module.css'
 import axios from '../../../axios-order'
 import Input from '../../../components/UI/Input/Input'
+import { connect } from "react-redux";
 
 class Contactdata extends Component {
     state = {
@@ -84,7 +85,9 @@ class Contactdata extends Component {
 
         }
         axios.post('/order.json', order)
-            .then(response => { this.setState({ loading: false }); console.log(response) })
+            .then(response => { this.setState({ loading: false });
+            this.props.history.push('/');
+             console.log(response) })
             .catch(error => { this.setState({ loading: false }) })
         console.log("RWQ PROPS", this.props)
     }
@@ -147,6 +150,12 @@ class Contactdata extends Component {
         )
     }
 }
+const mapStateToProps = state => {
+    return({
+        allingredients: state.ingredients,
+        price: state.totalprice
+    })
+}
 
 
-export default Contactdata
+export default connect(mapStateToProps)(Contactdata)
