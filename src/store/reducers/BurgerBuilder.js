@@ -1,17 +1,14 @@
+import * as actionTypes from '../actions/actionTypes'
 const initialState = {
-    ingredients: {
-        salad: 0,
-        meat: 0,
-        cheese: 0,
-        bacon: 0
-    },
+    ingredients: null,
     totalprice: 100,
     purchasable: false,
+    error: false
 }
 
 const reducer = (state = initialState, action) => {
     switch (action.type) {
-        case 'ADD_INGREDINT':
+        case actionTypes.ADDINGREDINT:
             const oldCount = state.ingredients[action.ingredienttypes];
             const updatedCount = oldCount + 1;
             const updatedIngredient = {
@@ -29,7 +26,7 @@ const reducer = (state = initialState, action) => {
                 purchasable: sum > 0
             })
 
-        case 'REMOVE_INGREDINT':
+        case actionTypes.REMOVEINGREDINT:
             const oldCount1 = state.ingredients[action.ingredienttypes];
             const updatedCount1 = oldCount1 - 1;
             const updatedIngredient1 = {
@@ -46,6 +43,17 @@ const reducer = (state = initialState, action) => {
                 ingredients: updatedIngredient1,
                 purchasable: sum1 > 0
             })
+            case actionTypes.SET_INGREDIENTS:
+                return({
+                    ...state,
+                    totalprice: 100,
+                    ingredients: action.ingredients
+                })
+            case actionTypes.FETCH_INGREDIENTS_FAILED:
+                return({
+                    ...state,
+                    error: true
+                })
 
         default:
             return state
