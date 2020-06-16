@@ -4,6 +4,7 @@ import './Layout.css'
 import Toolbar from '../Navigation/Toolbar/Toolbar'
 import SideDrawer from '../Navigation/SideDrawer/SideDrawer'
 import backgroundimage from '../../assets/images/backgroundimage.jpg'
+import { connect } from 'react-redux'
 
 class Layout extends Component {
     state = {
@@ -24,11 +25,18 @@ class Layout extends Component {
             <Auxillary>
                 <img className='Bgimg' src={backgroundimage} alt =' '/>
                 {/* <div className='Bgimg'><a href="https://www.freepik.com/free-photos-vectors/frame"></a></div> */}
-                <Toolbar sidestate={this.state.showsidebar} sideshow={this.sidebarshowhandler}/>
-                <SideDrawer closed={this.state.showsidebar} open={this.backdrophandler}/>
+                <Toolbar sidestate={this.state.showsidebar} isAuthenticated={this.props.isAuthenticated} sideshow={this.sidebarshowhandler}/>
+                <SideDrawer closed={this.state.showsidebar} isAuthenticated={this.props.isAuthenticated} open={this.backdrophandler}/>
                 <div className='Content'>{this.props.children}</div>
             </Auxillary>
         )
     }
 }
-export default Layout
+
+const mapStateToProps = state => {
+    return {
+        isAuthenticated: state.auth.token !== null
+    }
+}
+
+export default connect(mapStateToProps)(Layout)

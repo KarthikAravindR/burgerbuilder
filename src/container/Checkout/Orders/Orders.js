@@ -8,18 +8,7 @@ import withErrorHandler from '../../../hoc/withErrorHandler/withErrorHandler'
 
 class Orders extends Component {
     componentDidMount() {
-        axios.get('/order.json')
-            .then(response => {
-                const fetcheddata = []
-                for (let key in response.data) {
-                    fetcheddata.push({
-                        ...response.data[key],
-                        id: key
-                    })
-                }
-                console.log('fetcheddata: ', fetcheddata)
-            })
-        this.props.onFetchOrders()
+        this.props.onFetchOrders(this.props.token, this.props.userId)
     }
 
     render() {
@@ -39,12 +28,14 @@ class Orders extends Component {
 const mapStateToProps = state => {
     return {
         orders: state.order.orders,
-        loading: state.order.loading
+        loading: state.order.loading,
+        token: state.auth.token,
+        userId:state.auth.userid
     }
 }
 const mapStateToDispatch = dispatch => {
     return {
-        onFetchOrders: () => { dispatch(actions.fetchOrders()) }
+        onFetchOrders: (token, userId) => { dispatch(actions.fetchOrders(token, userId)) }
     }
 }
 

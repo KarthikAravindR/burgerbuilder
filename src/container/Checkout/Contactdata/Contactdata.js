@@ -43,10 +43,23 @@ class Contactdata extends Component {
                 value: '',
                 validation: {
                     isrequired: true,
-                    minlength: 5,
-                    maxLength: 5
+                    minLength: 5,
+                    maxLength: 5,
+                    isNumeric: true
                 },
                 valid: true
+            },
+            country: {
+                elementtype: 'input',
+                elementconfig: {
+                    type: 'text',
+                    placeholder: 'Country'
+                },
+                value: '',
+                validation: {
+                    isrequired: true
+                },
+                valid: true,
             },
             email: {
                 elementtype: 'input',
@@ -57,6 +70,7 @@ class Contactdata extends Component {
                 value: '',
                 validation: {
                     isrequired: true,
+                    isEmail: true
                 },
                 valid: true
             },
@@ -84,28 +98,43 @@ class Contactdata extends Component {
         const order = {
             ingredients: this.props.allingredients,
             price: this.props.price,
-            userdata: formdata
+            userdata: formdata,
+            userId: this.props.userId
         }
-        this.props.onPurchaseStart(order)
+        this.props.onPurchaseStart(order, this.props.token)
         // this.props.history.push('/')
         // console.log("RWQ PROPS", this.props)
     }
 
-    checkvalidity = (value, rules) => {
-        let isValid = true
-        console.log('value :', value)
-        console.log('rules :', rules)
+    checkValidity(value, rules) {
+        let isValid = true;
+        if (!rules) {
+            return true;
+        }
+        
         if (rules.isrequired) {
-            isValid = value.trim() !== '' && isValid
+            isValid = value.trim() !== '' && isValid;
         }
-        if (rules.minlength) {
-            isValid = value.length >= 5 && isValid
+
+        if (rules.minLength) {
+            isValid = value.length >= rules.minLength && isValid
         }
-        if (rules.maxlength) {
-            isValid = value.length <= 5 && isValid
+
+        if (rules.maxLength) {
+            isValid = value.length <= rules.maxLength && isValid
         }
-        console.log('isValid :', isValid)
-        return isValid
+
+        if (rules.isEmail) {
+            const pattern = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/;
+            isValid = pattern.test(value) && isValid
+        }
+
+        if (rules.isNumeric) {
+            const pattern = /^\d+$/;
+            isValid = pattern.test(value) && isValid
+        }
+
+        return isValid;
     }
 
     inputchangeHandler = (event, inputidentifier) => {
@@ -117,7 +146,7 @@ class Contactdata extends Component {
             ...updatedformorders[inputidentifier]
         }
         updatedformelements.value = event.target.value
-        updatedformelements.valid = this.checkvalidity(updatedformelements.value, updatedformelements.validation)
+        updatedformelements.valid = this.checkValidity(updatedformelements.value, updatedformelements.validation)
         console.log('updatedformelements.valid :', updatedformelements.valid)
         updatedformorders[inputidentifier] = updatedformelements
         let formvalidation = true
@@ -138,7 +167,14 @@ class Contactdata extends Component {
         let form = <div>
             <form>
                 {formelementarray.map(formelement => (
-                    <Input key={formelement.id} shouldvalidate={formelement.config.validation} validity={formelement.config.valid} changd={(event) => this.inputchangeHandler(event, formelement.id)} label={formelement.id} elementtype={formelement.config.elementtype} elementconfig={formelement.config.elementconfig} value={formelement.config.value} />
+                    <Input  key={formelement.id} 
+                            shouldvalidate={formelement.config.validation} 
+                            validity={formelement.config.valid} 
+                            changd={(event) => this.inputchangeHandler(event, formelement.id)} 
+                            label={formelement.id} 
+                            elementtype={formelement.config.elementtype} 
+                            elementconfig={formelement.config.elementconfig} 
+                            value={formelement.config.value} />
                 ))}
             </form>
             <button className={classes.Button} disabled={!this.state.forminvalid} onClick={this.orderplacedHandler}>Order</button>
@@ -158,12 +194,14 @@ const mapStateToProps = state => {
     return ({
         allingredients: state.burgerbuilder.ingredients,
         price: state.burgerbuilder.totalprice,
-        loading: state.order.loading
+        loading: state.order.loading,
+        token: state.auth.token,
+        userId: state.auth.userid
     })
 }
 const mapDispatchToProps = dispatch => {
     return ({
-        onPurchaseStart: (orderData) => dispatch(actions.purchaseBurger(orderData))
+        onPurchaseStart: (orderData, token) => dispatch(actions.purchaseBurger(orderData, token))
     })
 }
 

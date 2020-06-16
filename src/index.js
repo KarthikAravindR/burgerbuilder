@@ -6,6 +6,7 @@ import { createStore,applyMiddleware,compose,combineReducers } from "redux";
 import { Provider } from "react-redux";
 import BurgerBuilderreducer from './store/reducers/BurgerBuilder'
 import orderreducer from './store/reducers/Order'
+import authreducer from './store/reducers/Auth'
 import * as serviceWorker from './serviceWorker';
 import thunk from 'redux-thunk'
 
@@ -23,7 +24,8 @@ const logger = store => {
 }
 const rootReducer = combineReducers({
   burgerbuilder: BurgerBuilderreducer,
-  order: orderreducer
+  order: orderreducer,
+  auth: authreducer
 })
 const store = createStore(rootReducer,composeEnhancers(applyMiddleware(logger, thunk)))
 
